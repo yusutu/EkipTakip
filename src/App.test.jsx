@@ -2,8 +2,10 @@ import { expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders ekip takip dashboard', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeDefined();
+
+  expect(screen.getByText(/EkipTakip/i)).toBeInTheDocument();
+  expect(screen.getByText(/Yapılacak işler/i)).toBeInTheDocument();
+  expect(screen.getByText(/Takım etkinliği/i)).toBeInTheDocument();
 });
