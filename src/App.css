@@ -757,6 +757,43 @@
   color: #15803d;
 }
 
+.completion-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.completion-info strong {
+  color: #172033;
+}
+
+.late-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.ontime-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
 .tasks-list {
   display: flex;
   flex-direction: column;
@@ -804,3 +841,954 @@
     align-items: flex-start;
   }
 }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #172033;
+}
+
+.modal-close-btn {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #1e293b;
+}
+
+.modal-body {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+  flex-shrink: 0;
+}
+
+.cancel-btn {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #1e293b;
+  padding: 11px 18px;
+  font: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.danger-btn {
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  background: #dc2626;
+  color: white;
+  padding: 11px 18px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.danger-btn:hover {
+  background: #b91c1c;
+}
+
+.confirm-modal {
+  max-width: 420px;
+}
+
+.task-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-item-btn,
+.delete-item-btn {
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-item-btn {
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+}
+
+.edit-item-btn:hover {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.delete-item-btn {
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+}
+
+.delete-item-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* iPad responsive */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .modal-body {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .field-group {
+    margin: 0;
+  }
+
+  .field-group textarea,
+  .field-group input,
+  .field-group select {
+    font-size: 16px;
+  }
+
+  .completion-info {
+    flex-wrap: wrap;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .task-status-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* OKR / Taktik Styles */
+.okr-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.okr-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.okr-topbar h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+}
+
+.tactics-list-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
+}
+
+.tactics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tactic-card {
+  background: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tactic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tactic-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #172033;
+}
+
+.tactic-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tactic-status-badge.devam-ediyor {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.tactic-status-badge.beklemede {
+  background: rgba(148, 163, 184, 0.14);
+  color: #475569;
+}
+
+.tactic-status-badge.planlandı {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.tactic-status-badge.tamamlandı {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.tactic-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-header span {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.progress-header strong {
+  color: #172033;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.progress-track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.15);
+  overflow: hidden;
+}
+
+.progress-track span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #8b5cf6);
+  transition: width 0.3s ease;
+}
+
+.progress-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-input {
+  width: 100%;
+  max-width: 80px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  color: #172033;
+  background: white;
+}
+
+.progress-unit {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.tactic-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.tactic-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tactic-meta span {
+  color: #64748b;
+  font-size: 0.75rem;
+  text-transform: none;
+}
+
+.tactic-meta strong {
+  color: #172033;
+  font-size: 0.9rem;
+}
+
+/* OKR Responsive */
+@media (max-width: 768px) {
+  .okr-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .okr-topbar h2 {
+    font-size: 1.6rem;
+  }
+
+  .tactics-list-panel {
+    padding: 16px;
+  }
+
+  .tactic-card {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .tactic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tactic-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-input {
+    max-width: 70px;
+    font-size: 14px;
+  }
+}
+
+/* Steps Styles */
+.tactic-steps-section {
+  margin-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding-top: 14px;
+}
+
+.steps-toggle-btn {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  padding: 8px 0;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.steps-toggle-btn:hover {
+  color: #172033;
+}
+
+.steps-label {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 0.7rem;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.steps-list-wrapper {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-item {
+  background: rgba(60, 58, 247, 0.05);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.step-header strong {
+  color: #172033;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.step-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.step-status-badge.devam-ediyor {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.step-status-badge.beklemede {
+  background: rgba(148, 163, 184, 0.14);
+  color: #475569;
+}
+
+.step-status-badge.planlandı {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.step-status-badge.tamamlandı {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.step-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.step-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step-meta span {
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+
+.step-meta strong {
+  color: #172033;
+  font-size: 0.85rem;
+}
+
+.step-progress {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-progress-input {
+  width: 50px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font: inherit;
+  color: #172033;
+  background: white;
+  font-size: 0.8rem;
+}
+
+.add-step-btn {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  background: rgba(60, 58, 247, 0.05);
+  color: #3c3af7;
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.add-step-btn:hover {
+  background: rgba(60, 58, 247, 0.1);
+  border-color: rgba(60, 58, 247, 0.3);
+}
+
+.empty-steps {
+  padding: 10px 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.tactic-workitems-section {
+  margin-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding-top: 14px;
+}
+
+.workitems-title {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.workitems-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.linked-workitem {
+  background: rgba(37, 99, 235, 0.05);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linked-workitem-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.linked-workitem-header strong {
+  color: #172033;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.work-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.work-status-badge.devam-ediyor {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.work-status-badge.beklemede {
+  background: rgba(148, 163, 184, 0.14);
+  color: #475569;
+}
+
+.work-status-badge.planlandı {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.work-status-badge.riskli {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.work-status-badge.tamamlandı {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.linked-workitem-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.empty-workitems {
+  padding: 10px 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Steps Responsive */
+@media (max-width: 768px) {
+  .step-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .step-progress-input {
+    width: 45px;
+    font-size: 0.75rem;
+  }
+
+  .steps-toggle-btn {
+    font-size: 0.8rem;
+  }
+
+  .step-item {
+    padding: 10px;
+    gap: 6px;
+  }
+}
+
+/* Calendar Page */
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.calendar-topbar h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+}
+
+.calendar-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calendar-filter-panel {
+  padding: 16px 20px;
+}
+
+.calendar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.calendar-month-label {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #172033;
+  text-transform: capitalize;
+}
+
+.calendar-nav-btn {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #1e293b;
+  width: 36px;
+  height: 36px;
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calendar-cell {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 12px;
+  background: #f8fafc;
+  min-height: 72px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  cursor: pointer;
+  font: inherit;
+  transition: all 0.2s ease;
+}
+
+.calendar-cell:hover {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.calendar-cell.today {
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+.calendar-cell.selected {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: #2563eb;
+}
+
+.calendar-day-number {
+  color: #172033;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.calendar-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.calendar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+}
+
+.calendar-dot.work-dot {
+  background: #2563eb;
+}
+
+.calendar-dot.note-dot {
+  background: #7c3aed;
+}
+
+.calendar-detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calendar-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-detail-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #172033;
+  text-transform: capitalize;
+}
+
+.calendar-detail-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.calendar-detail-section h4 {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.calendar-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-detail-item {
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.calendar-detail-item.work-item {
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.16);
+}
+
+.calendar-detail-item.work-item span {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.calendar-detail-item.note-item {
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+}
+
+.calendar-detail-item.note-item p {
+  margin: 0;
+  color: #172033;
+}
+
+.empty-state-small {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  padding: 8px 0;
+}
+
+@media (max-width: 768px) {
+  .calendar-cell {
+    min-height: 52px;
+    padding: 6px;
+  }
+
+  .calendar-day-number {
+    font-size: 0.75rem;
+  }
+
+  .calendar-detail-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+

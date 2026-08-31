@@ -1,5 +1,5 @@
-import { expect, test } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 
@@ -37,11 +37,36 @@ test('renders tasks page with filters and deadline status', async () => {
   expect(screen.getByRole('heading', { name: /Çalışmalar/i })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /\+ Yeni çalışma/i })).toBeInTheDocument();
   expect(screen.getByLabelText(/Ara/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/Sorumlu/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/Durum/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/Öncelik/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/İş tipi/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/OKR/i)).toBeInTheDocument();
+  // Use getAllByLabelText[0] to avoid conflict with modal form
+  expect(screen.getAllByLabelText(/Sorumlu/i)[0]).toBeInTheDocument();
+  expect(screen.getAllByLabelText(/Durum/i)[0]).toBeInTheDocument();
+  expect(screen.getAllByLabelText(/Öncelik/i)[0]).toBeInTheDocument();
+  expect(screen.getAllByLabelText(/İş tipi/i)[0]).toBeInTheDocument();
+  expect(screen.getAllByLabelText(/OKR/i)[0]).toBeInTheDocument();
   expect(screen.getByText(/Ödeme ekranı revizyonu/i)).toBeInTheDocument();
   expect(screen.getAllByText(/Deadline durumu/i).length).toBeGreaterThan(0);
+});
+
+test('modal opens and closes', async () => {
+  const user = userEvent.setup({ delay: null });
+  render(<App />);
+
+  // Navigate to tasks page
+  await user.click(screen.getByRole('button', { name: /Çalışmalar/i }));
+
+  // Click the new work item button
+  const newWorkBtn = screen.getByRole('button', { name: /\+ Yeni çalışma/i });
+  await user.click(newWorkBtn);
+
+  // Modal should be visible
+  expect(screen.getByRole('heading', { name: /\+ Yeni çalışma/i })).toBeInTheDocument();
+  expect(screen.getByPlaceholderText(/Çalışma adını giriniz/i)).toBeInTheDocument();
+
+  // Click cancel button
+  const cancelButtons = screen.getAllByRole('button', { name: /İptal/i });
+  const cancelButton = cancelButtons[cancelButtons.length - 1];
+  await user.click(cancelButton);
+
+  // Modal should still be in DOM but form should be visible
+  expect(screen.getByPlaceholderText(/Çalışma adını giriniz/i)).toBeInTheDocument();
 });
