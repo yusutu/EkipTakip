@@ -22,6 +22,22 @@ const teamStatus = [
   { name: 'Sefer', active: 4, status: 'Dengeli', late: 1 },
 ];
 
+const teamMembers = [
+  { id: 'elif', name: 'Elif Demir', role: 'Ürün Tasarımcısı', initials: 'ED', checkIn: '12 Eylül', strengths: ['Kullanıcı içgörülerini tasarıma dönüştürme', 'Paydaş iletişimi', 'Detay odağı'], developmentAreas: ['Kararları daha erken görünür kılmak', 'Araştırma bulgularını sayısallaştırmak'], notes: ['Son sprintte müşteri görüşmelerini iyi sentezledi.', 'Tasarım kararlarını ürün ekibiyle daha erken paylaşması bekleniyor.'], feedback: [{ date: '28 Ağustos 2026', author: 'Gökhan', text: 'Ödeme akışındaki alternatifleri netleştiren güçlü bir sunum hazırladı.', type: 'Olumlu' }, { date: '14 Ağustos 2026', author: 'Gökhan', text: 'Araştırma çıktılarında etki ölçümünü bir sonraki döngüde birlikte belirleyeceğiz.', type: 'Gelişim' }], actions: [{ title: 'Araştırma etki metriği oluştur', due: '18 Eylül 2026', status: 'Planlandı' }, { title: 'Tasarım karar günlüğünü paylaş', due: '05 Eylül 2026', status: 'Devam ediyor' }] },
+  { id: 'yasir', name: 'Yasir Kaya', role: 'Mobil Geliştirici', initials: 'YK', checkIn: '10 Eylül', strengths: ['Sahiplenme', 'Teknik problem çözme', 'Ekip içi destek'], developmentAreas: ['Tahminleri daha erken güncellemek', 'Teknik kararları dokümante etmek'], notes: ['Mobil bildirim akışındaki riskleri erkenden görünür kıldı.', 'Odak alanlarını haftalık görüşmede gözden geçirmek faydalı olur.'], feedback: [{ date: '26 Ağustos 2026', author: 'Gökhan', text: 'Karmaşık hata senaryolarını sakin ve sistematik biçimde çözdü.', type: 'Olumlu' }, { date: '08 Ağustos 2026', author: 'Gökhan', text: 'Tahmin değişikliklerini ekip ile daha erken paylaşması gerekiyor.', type: 'Gelişim' }], actions: [{ title: 'Teknik karar kaydı başlat', due: '12 Eylül 2026', status: 'Devam ediyor' }, { title: 'Sprint tahmin retrosu yap', due: '19 Eylül 2026', status: 'Planlandı' }] },
+  { id: 'berat', name: 'Berat Yıldız', role: 'Veri Analisti', initials: 'BY', checkIn: '17 Eylül', strengths: ['Analitik düşünme', 'Veri hikayeleştirme', 'Titizlik'], developmentAreas: ['Önceliklendirme', 'Bulguları kısa özetlemek'], notes: ['Raporlardaki veri kalitesi kontrolleri güven veriyor.', 'Yönetici özeti için daha kısa ve karar odaklı çıktı üretebilir.'], feedback: [{ date: '22 Ağustos 2026', author: 'Gökhan', text: 'KPI analizindeki veri tutarsızlığını zamanında yakaladı.', type: 'Olumlu' }], actions: [{ title: 'Yönetici özeti şablonu dene', due: '20 Eylül 2026', status: 'Planlandı' }] },
+  { id: 'fuat', name: 'Fuat Arslan', role: 'İçerik Stratejisti', initials: 'FA', checkIn: '15 Eylül', strengths: ['İçerik kurgusu', 'Yaratıcı fikir üretimi', 'İş birliği'], developmentAreas: ['Performans analizi', 'Kapsam yönetimi'], notes: ['Yayın takvimi paydaşlardan olumlu geri dönüş aldı.'], feedback: [{ date: '19 Ağustos 2026', author: 'Gökhan', text: 'Yeni içerik serisi için hedef kitleyi iyi tanımladı.', type: 'Olumlu' }], actions: [{ title: 'İçerik performans panosunu incele', due: '16 Eylül 2026', status: 'Planlandı' }] },
+];
+
+const initialTeamProfiles = teamMembers.map((member) => ({
+  ...member,
+  lastMeeting: member.feedback[0]?.date || 'Henüz görüşme yok',
+  nextMeeting: member.checkIn,
+  notes: member.notes.map((text, index) => ({ id: `${member.id}-note-${index}`, date: index === 0 ? '25 Ağustos 2026' : '18 Ağustos 2026', text })),
+  feedback: member.feedback.map((feedback, index) => ({ ...feedback, id: `${member.id}-feedback-${index}`, topic: 'Gelişim görüşmesi', followUpDate: '' })),
+  actions: member.actions.map((action, index) => ({ ...action, id: `${member.id}-action-${index}`, completed: false })),
+}));
+
 const initialNotes = [
   { id: 1, text: 'Müşteri geri bildirimleri için ödeme ekranı revizyonu öncelikli hale getirildi.', dueDate: '2026-08-25', completed: false, completedAt: null },
   { id: 2, text: 'Takım toplantısında mobil bildirim akışı için 2 iş günü eklendi.', dueDate: '2026-08-24', completed: false, completedAt: null },
@@ -121,6 +137,13 @@ const initialStepsFormData = {
 
 function App() {
   const [activeView, setActiveView] = useState('dashboard');
+  const [selectedTeamMemberId, setSelectedTeamMemberId] = useState('elif');
+  const [teamProfiles, setTeamProfiles] = useState(initialTeamProfiles);
+  const [traitDraft, setTraitDraft] = useState({ type: 'strengths', text: '' });
+  const [noteDraft, setNoteDraft] = useState({ date: getTodayValue(), text: '' });
+  const [feedbackDraft, setFeedbackDraft] = useState({ date: getTodayValue(), topic: '', type: 'Olumlu', text: '', followUpDate: '' });
+  const [actionDraft, setActionDraft] = useState({ title: '', due: '', status: 'Planlandı' });
+  const [editingActionId, setEditingActionId] = useState(null);
   const [notes, setNotes] = useState(initialNotes);
   const [noteText, setNoteText] = useState('');
   const [noteDate, setNoteDate] = useState(getTodayValue());
@@ -1045,6 +1068,71 @@ function App() {
     );
   };
 
+  const updateSelectedProfile = (updateProfile) => {
+    setTeamProfiles((profiles) => profiles.map((profile) => (
+      profile.id === selectedTeamMemberId ? updateProfile(profile) : profile
+    )));
+  };
+
+  const addTrait = () => {
+    if (!traitDraft.text.trim()) return;
+    updateSelectedProfile((profile) => ({ ...profile, [traitDraft.type]: [...profile[traitDraft.type], traitDraft.text.trim()] }));
+    setTraitDraft((current) => ({ ...current, text: '' }));
+  };
+
+  const removeTrait = (type, item) => updateSelectedProfile((profile) => ({ ...profile, [type]: profile[type].filter((trait) => trait !== item) }));
+
+  const addTeamNote = () => {
+    if (!noteDraft.text.trim() || !noteDraft.date) return;
+    updateSelectedProfile((profile) => ({ ...profile, notes: [{ id: Date.now(), ...noteDraft, text: noteDraft.text.trim() }, ...profile.notes] }));
+    setNoteDraft({ date: getTodayValue(), text: '' });
+  };
+
+  const addFeedback = () => {
+    if (!feedbackDraft.date || !feedbackDraft.topic.trim() || !feedbackDraft.text.trim()) return;
+    updateSelectedProfile((profile) => ({ ...profile, lastMeeting: formatDate(feedbackDraft.date), feedback: [{ id: Date.now(), author: 'Gökhan', ...feedbackDraft, text: feedbackDraft.text.trim(), topic: feedbackDraft.topic.trim() }, ...profile.feedback] }));
+    setFeedbackDraft({ date: getTodayValue(), topic: '', type: 'Olumlu', text: '', followUpDate: '' });
+  };
+
+  const saveAction = () => {
+    if (!actionDraft.title.trim() || !actionDraft.due) return;
+    updateSelectedProfile((profile) => ({
+      ...profile,
+      actions: editingActionId
+        ? profile.actions.map((action) => action.id === editingActionId ? { ...action, ...actionDraft, title: actionDraft.title.trim() } : action)
+        : [...profile.actions, { id: Date.now(), ...actionDraft, title: actionDraft.title.trim(), completed: false }],
+    }));
+    setActionDraft({ title: '', due: '', status: 'Planlandı' });
+    setEditingActionId(null);
+  };
+
+  const renderTeamPage = () => {
+    const selectedMember = teamProfiles.find((member) => member.id === selectedTeamMemberId) || teamProfiles[0];
+
+    return (
+      <div className="team-page">
+        <header className="team-topbar"><p className="eyebrow">Ekip gelişimi</p><h2>Çalışan gelişimi ve geri bildirim</h2><p>Her ekip üyesinin gelişim yolculuğunu ve görüşme notlarını takip edin.</p></header>
+        <section className="member-card-grid" aria-label="Ekip üyeleri">
+          {teamProfiles.map((member) => (
+            <button key={member.id} type="button" className={`member-card ${member.id === selectedMember.id ? 'selected' : ''}`} onClick={() => setSelectedTeamMemberId(member.id)} aria-pressed={member.id === selectedMember.id}>
+              <span className="member-card-avatar">{member.initials}</span><span className="member-card-copy"><strong>{member.name}</strong><span>{member.role}</span></span><span className="check-in-label">Son görüşme: {member.lastMeeting}</span><span className="check-in-label">Sonraki görüşme: {member.nextMeeting}</span>
+            </button>
+          ))}
+        </section>
+        <section className="development-detail" aria-live="polite">
+          <div className="detail-heading"><div className="detail-avatar">{selectedMember.initials}</div><div><p className="eyebrow">Gelişim profili</p><h3>{selectedMember.name}</h3><p>{selectedMember.role}</p></div></div>
+          <div className="development-grid">
+            <article className="development-section strength-section"><h4>Güçlü yönler</h4><ul className="editable-list">{selectedMember.strengths.map((item) => <li key={item}>{item}<button type="button" className="inline-delete" aria-label={`Güçlü yön sil: ${item}`} onClick={() => removeTrait('strengths', item)}>Sil</button></li>)}</ul><div className="inline-form"><input aria-label="Yeni güçlü yön" value={traitDraft.type === 'strengths' ? traitDraft.text : ''} onChange={(event) => setTraitDraft({ type: 'strengths', text: event.target.value })} /><button type="button" onClick={addTrait}>Ekle</button></div></article>
+            <article className="development-section area-section"><h4>Gelişim alanları</h4><ul className="editable-list">{selectedMember.developmentAreas.map((item) => <li key={item}>{item}<button type="button" className="inline-delete" aria-label={`Gelişim alanı sil: ${item}`} onClick={() => removeTrait('developmentAreas', item)}>Sil</button></li>)}</ul><div className="inline-form"><input aria-label="Yeni gelişim alanı" value={traitDraft.type === 'developmentAreas' ? traitDraft.text : ''} onChange={(event) => setTraitDraft({ type: 'developmentAreas', text: event.target.value })} /><button type="button" onClick={addTrait}>Ekle</button></div></article>
+            <article className="development-section notes-section"><h4>Gözlemler ve yönetici notları</h4><div className="manager-notes">{selectedMember.notes.map((note) => <div className="dated-record" key={note.id}><small>{formatDate(note.date)}</small><p>{note.text}</p></div>)}</div><div className="record-form"><input aria-label="Gözlem tarihi" type="date" value={noteDraft.date} onChange={(event) => setNoteDraft({ ...noteDraft, date: event.target.value })} /><textarea aria-label="Yönetici notu" value={noteDraft.text} onChange={(event) => setNoteDraft({ ...noteDraft, text: event.target.value })} /><button type="button" onClick={addTeamNote}>Not ekle</button></div></article>
+            <article className="development-section feedback-section"><h4>Geri bildirim geçmişi</h4><div className="feedback-list">{selectedMember.feedback.map((feedback) => <div className="feedback-item" key={feedback.id}><span className={`feedback-type ${feedback.type.toLowerCase()}`}>{feedback.type}</span><strong>{feedback.topic}</strong><p>{feedback.text}</p><small>{feedback.author} · {formatDate(feedback.date)}{feedback.followUpDate ? ` · Takip: ${formatDate(feedback.followUpDate)}` : ''}</small></div>)}</div><div className="record-form"><input aria-label="Görüşme tarihi" type="date" value={feedbackDraft.date} onChange={(event) => setFeedbackDraft({ ...feedbackDraft, date: event.target.value })} /><input aria-label="Görüşme konusu" placeholder="Görüşme konusu" value={feedbackDraft.topic} onChange={(event) => setFeedbackDraft({ ...feedbackDraft, topic: event.target.value })} /><select aria-label="Geri bildirim türü" value={feedbackDraft.type} onChange={(event) => setFeedbackDraft({ ...feedbackDraft, type: event.target.value })}><option>Olumlu</option><option>Gelişim</option><option>Yapıcı</option></select><textarea aria-label="Görüşme notu" value={feedbackDraft.text} onChange={(event) => setFeedbackDraft({ ...feedbackDraft, text: event.target.value })} /><input aria-label="Takip tarihi" type="date" value={feedbackDraft.followUpDate} onChange={(event) => setFeedbackDraft({ ...feedbackDraft, followUpDate: event.target.value })} /><button type="button" onClick={addFeedback}>Görüşme ekle</button></div></article>
+            <article className="development-section actions-section"><h4>Gelişim aksiyonları</h4><div className="action-list">{selectedMember.actions.map((action) => <div className="development-action" key={action.id}><div><strong className={action.completed ? 'completed-action' : ''}>{action.title}</strong><span>Hedef tarih: {formatDate(action.due)}</span></div><span className={`action-status ${action.completed ? 'tamamlandı' : action.status.toLowerCase().replace(/\s+/g, '-')}`}>{action.completed ? 'Tamamlandı' : action.status}</span><div className="action-controls"><button type="button" onClick={() => updateSelectedProfile((profile) => ({ ...profile, actions: profile.actions.map((current) => current.id === action.id ? { ...current, completed: !current.completed } : current) }))}>{action.completed ? 'Geri al' : 'Tamamla'}</button><button type="button" onClick={() => { setActionDraft({ title: action.title, due: action.due, status: action.status }); setEditingActionId(action.id); }}>Düzenle</button><button type="button" className="inline-delete" onClick={() => updateSelectedProfile((profile) => ({ ...profile, actions: profile.actions.filter((current) => current.id !== action.id) }))}>Sil</button></div></div>)}</div><div className="record-form action-form"><input aria-label="Aksiyon adı" value={actionDraft.title} onChange={(event) => setActionDraft({ ...actionDraft, title: event.target.value })} /><input aria-label="Aksiyon hedef tarihi" type="date" value={actionDraft.due} onChange={(event) => setActionDraft({ ...actionDraft, due: event.target.value })} /><select aria-label="Aksiyon durumu" value={actionDraft.status} onChange={(event) => setActionDraft({ ...actionDraft, status: event.target.value })}><option>Planlandı</option><option>Devam ediyor</option></select><button type="button" onClick={saveAction}>{editingActionId ? 'Aksiyonu güncelle' : 'Aksiyon ekle'}</button></div></article>
+          </div>
+        </section>
+      </div>
+    );
+  };
+
   const renderDashboard = () => (
     <>
       <header className="topbar">
@@ -1508,7 +1596,7 @@ function App() {
           >
             Takvim
           </button>
-          <button className="nav-item">Ekip</button>
+          <button type="button" className={`nav-item ${activeView === 'team' ? 'active' : ''}`} onClick={() => setActiveView('team')}>Ekip</button>
           <button
             type="button"
             className={`nav-item ${activeView === 'okr' ? 'active' : ''}`}
@@ -1530,7 +1618,7 @@ function App() {
       </aside>
 
       <main className="main-panel">
-        {activeView === 'notes' ? renderNotesPage() : activeView === 'tasks' ? renderTasksPage() : activeView === 'okr' ? renderOKRPage() : activeView === 'calendar' ? renderCalendarPage() : renderDashboard()}
+        {activeView === 'notes' ? renderNotesPage() : activeView === 'tasks' ? renderTasksPage() : activeView === 'okr' ? renderOKRPage() : activeView === 'calendar' ? renderCalendarPage() : activeView === 'team' ? renderTeamPage() : renderDashboard()}
       </main>
 
       {renderWorkItemModal()}

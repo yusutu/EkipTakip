@@ -26,6 +26,11 @@ test('renders notes page with completed filter and completion metadata', async (
   const completedLabels = screen.getAllByText(/Tamamlandı/i);
   expect(completedLabels.length).toBeGreaterThan(0);
   expect(screen.getAllByText(/Tamamlama tarihi:/i).length).toBeGreaterThan(0);
+
+  await user.type(screen.getByLabelText(/Not metni/i), 'Yeni takip notu');
+  await user.click(screen.getByRole('button', { name: /Not ekle/i }));
+
+  expect(screen.getByText('Yeni takip notu')).toBeInTheDocument();
 });
 
 test('renders tasks page with filters and deadline status', async () => {
@@ -69,4 +74,36 @@ test('modal opens and closes', async () => {
 
   // Modal should still be in DOM but form should be visible
   expect(screen.getByPlaceholderText(/Çalışma adını giriniz/i)).toBeInTheDocument();
+});
+
+test('renders employee development details when a team member is selected', async () => {
+  const user = userEvent.setup();
+  render(<App />);
+
+  await user.click(screen.getByRole('button', { name: /^Ekip$/i }));
+
+  expect(screen.getByRole('heading', { name: /Çalışan gelişimi ve geri bildirim/i })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Elif Demir/i })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Güçlü yönler/i })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /Gelişim aksiyonları/i })).toBeInTheDocument();
+
+  await user.click(screen.getByRole('button', { name: /Yasir Kaya/i }));
+
+  expect(screen.getByRole('heading', { name: /Yasir Kaya/i })).toBeInTheDocument();
+  expect(screen.getByText(/Teknik karar kaydı başlat/i)).toBeInTheDocument();
+});
+
+test('allows adding team feedback and completing development actions', async () => {
+  const user = userEvent.setup();
+  render(<App />);
+
+  await user.click(screen.getByRole('button', { name: /^Ekip$/i }));
+  await user.type(screen.getByLabelText(/Görüşme konusu/i), 'Kariyer hedefleri');
+  await user.type(screen.getByLabelText(/Görüşme notu/i), 'Yeni dönem gelişim hedefleri netleştirildi.');
+  await user.click(screen.getByRole('button', { name: /Görüşme ekle/i }));
+
+  expect(screen.getByText('Kariyer hedefleri')).toBeInTheDocument();
+
+  await user.click(screen.getAllByRole('button', { name: /^Tamamla$/i })[0]);
+  expect(screen.getByRole('button', { name: /Geri al/i })).toBeInTheDocument();
 });
